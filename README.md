@@ -287,13 +287,6 @@ The application uses Google Gemini 2.0 Flash with structured output to automatic
 1. **Subtask Generation**: When creating a task, AI analyzes the title and description
 2. **Structured Output**: Gemini returns formatted JSON array of subtask strings
 
-### Authentication Flow
-
-- JWT tokens stored in HTTP-only cookies for security
-- Password hashing using bcryptjs with salt rounds
-- Protected API routes with middleware validation
-- User isolation ensuring data privacy
-
 ### Database Schema
 
 ```typescript
@@ -358,3 +351,10 @@ This project was completed with the assistance of various online resources and d
 
 - **AI Integration**: Implementing reliable AI subtask generation with structured output and fallback systems
 - **Cachig Integration**:
+
+
+### Improvements
+
+- Automatically mark task as done if all elements of checklist are ticked
+- Keep mark existing checklist items while re generating tasklist from AI. We have to do two more steps for this
+- Implement Rate Limiter do prevent brute on login/signup routes
