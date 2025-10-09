@@ -1,317 +1,355 @@
-# Task Manager - Modern Task Management Application
+# TASK MANAGEMENT API
 
-A full-stack task management application built with Next.js 14, TypeScript, MongoDB, and shadcn/ui. Features include user authentication, CRUD operations, search & filtering, pagination, and responsive design.
+#### This project focuses on Modern Task Management System with AI-powered subtask generation, comprehensive CRUD operations, and user authentication using Next.js and MongoDB.
 
-## 🚀 Features
+## Table of Contents
 
-### Authentication
+- [Project Features](#project-features)
+- [Tech Stack](#tech-stack)
+- [Libraries Used](#libraries-used)
+- [Setup and Installation](#setup-and-installation)
+- [Environment Variables](#environment-variables)
+- [API Endpoints and Sample Requests](#api-endpoints-and-sample-requests)
+- [Development Choices](#development-choices)
+- [Architecture](#architecture)
+- [Acknowledgements](#acknowledgements)
 
-- **Secure Sign Up/Login** with email and password
-- **JWT-based authentication** with HTTP-only cookies
-- **Password hashing** using bcryptjs
-- **Protected routes** and user session management
+---
 
-### Task Management
+## Project Features
 
-- **Complete CRUD operations** (Create, Read, Update, Delete)
-- **Task properties**: title, description, status (pending/done), timestamps
-- **User isolation** - users can only access their own tasks
-- **Optimistic updates** for smooth user experience
+- **Task Management**: Complete CRUD operations with title, description, status tracking, and timestamps
+- **AI-Powered Subtasks**: Automatically generate actionable subtasks using Google Gemini 2.0 Flash with structured output
+- **User Authentication**: Secure JWT-based authentication with HTTP-only cookies and password hashing
+- **Advanced Search & Filtering**: Real-time search by title/description with status filtering and pagination
+- **Responsive UI**: Modern, accessible interface built with shadcn/ui and Tailwind CSS
 
-### Search & Filtering
+---
 
-- **Real-time search** by title or description
-- **Status filtering** (All, Pending, Done)
-- **Combined search and filter** functionality
-- **Pagination** for efficient data loading
+## Tech Stack
 
-### Modern UI/UX
+- **Frontend**: Next.js 14 (App Router), TypeScript, React Query (TanStack Query)
+- **Backend**: Next.js API Routes, MongoDB with Mongoose ODM
+- **Authentication**: JWT with bcryptjs password hashing
+- **AI Integration**: Google Gemini 2.0 Flash with Structured Output
+- **UI Framework**: shadcn/ui, Tailwind CSS, Lucide React Icons
 
-- **Responsive design** that works on all devices
-- **Clean and minimal** interface using shadcn/ui
-- **Loading states** and error handling
-- **Accessible components** with proper ARIA labels
-- **Smooth animations** and transitions
+---
 
-## 🛠️ Tech Stack
+## Libraries Used
 
-### Frontend
+- **Next.js**: Full-stack React framework with App Router
+- **@tanstack/react-query**: Data fetching, caching, and state management
+- **mongoose**: MongoDB object modeling for Node.js
+- **@google/generative-ai**: Google Gemini API client for AI-powered subtask generation
+- **jsonwebtoken**: JWT token generation and verification
+- **bcryptjs**: Password hashing and validation
+- **shadcn/ui**: Beautiful, accessible React components
+- **tailwindcss**: Utility-first CSS framework
+- **lucide-react**: Beautiful & consistent icon toolkit
 
-- **Next.js 14** (App Router)
-- **TypeScript** for type safety
-- **React Query (TanStack Query)** for data fetching and caching
-- **shadcn/ui** for beautiful, accessible components
-- **Tailwind CSS** for styling
-- **Lucide React** for icons
+---
 
-### Backend
+## Setup and Installation
 
-- **Next.js API Routes** for serverless functions
-- **MongoDB** with Mongoose ODM
-- **JWT** for authentication
-- **bcryptjs** for password hashing
+### Prerequisites
 
-### Development Tools
+- Node.js 18+
+- npm or yarn
+- MongoDB (local or Atlas)
+- Google Gemini API Key
 
-- **ESLint** for code linting
-- **TypeScript** for type checking
-- **Git** for version control
+### Environment Variables
 
-## 📋 Prerequisites
-
-Before running this application, make sure you have the following installed:
-
-- **Node.js** (version 18 or higher)
-- **npm** or **yarn** package manager
-- **MongoDB** (local installation or MongoDB Atlas)
-- **Git** for cloning the repository
-
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone <repository-url>
-cd task-manager-3
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-# or
-yarn install
-```
-
-### 3. Environment Variables
-
-Create a `.env.local` file in the root directory and add the following variables:
+Create a `.env.local` file in the root directory:
 
 ```env
 # Database Configuration
 MONGODB_URI=mongodb://localhost:27017/task-manager
-# For MongoDB Atlas, use: mongodb+srv://username:password@cluster.mongodb.net/task-manager
+# For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/task-manager
 
 # Authentication
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 NEXTAUTH_SECRET=your-nextauth-secret-key
 NEXTAUTH_URL=http://localhost:3000
+
+# AI Integration
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+### Steps
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/ayushjaiz/task
+   cd task
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Database Setup**:
+   - **Local MongoDB**: Install and start MongoDB service locally
+   - **MongoDB Atlas**: Create cluster and get connection string
+
+4. **Run the Application**:
+   ```bash
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+- Application starts running at `http://localhost:3000`
+
+---
+
+## API Endpoints and Sample Requests
+
+### POST /api/auth/register
+Register a new user account.
+
+**Request:**
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword123"
+}
 ```
 
-**Important**:
-
-- Replace `your-super-secret-jwt-key-change-this-in-production` with a strong, random secret
-- For production, use environment-specific URLs and secrets
-- Keep your `.env.local` file secure and never commit it to version control
-
-### 4. Database Setup
-
-#### Option A: Local MongoDB
-
-1. Install MongoDB on your local machine
-2. Start the MongoDB service
-3. The application will automatically create the database and collections
-
-#### Option B: MongoDB Atlas (Recommended for production)
-
-1. Create a free account at [MongoDB Atlas](https://www.mongodb.com/atlas)
-2. Create a new cluster
-3. Get your connection string and replace the `MONGODB_URI` in `.env.local`
-4. Make sure to whitelist your IP address
-
-### 5. Run the Development Server
-
-```bash
-npm run dev
-# or
-yarn dev
+**Response:**
+```json
+{
+  "message": "User created successfully",
+  "user": {
+    "id": "674a1b2c3d4e5f6789012345",
+    "email": "user@example.com"
+  }
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
+### POST /api/auth/login
+Authenticate user and get access token.
 
-## 📁 Project Structure
+**Request:**
+```json
+{
+  "email": "user@example.com",
+  "password": "securepassword123"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Login successful",
+  "user": {
+    "id": "674a1b2c3d4e5f6789012345",
+    "email": "user@example.com"
+  }
+}
+```
+
+### POST /api/tasks
+Create a new task with AI-generated subtasks.
+
+**Request:**
+```json
+{
+  "title": "Build a Website",
+  "description": "Create a responsive portfolio website using React and Tailwind CSS"
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Task created successfully",
+  "task": {
+    "_id": "674a1b2c3d4e5f6789012346",
+    "title": "Build a Website",
+    "description": "Create a responsive portfolio website using React and Tailwind CSS",
+    "status": "pending",
+    "subtasks": [
+      {
+        "subtask_id": "674a1b2c3d4e5f6789012347",
+        "description": "Plan and outline the website structure",
+        "isCompleted": false
+      },
+      {
+        "subtask_id": "674a1b2c3d4e5f6789012348",
+        "description": "Set up React project with Tailwind CSS",
+        "isCompleted": false
+      }
+    ],
+    "createdAt": "2025-01-09T10:30:00Z"
+  }
+}
+```
+
+### GET /api/tasks
+Retrieve tasks with filtering and pagination.
+
+**Query Parameters:**
+- `page=1` - Page number
+- `limit=10` - Items per page
+- `search=website` - Search in title/description
+- `status=pending` - Filter by status
+
+**Response:**
+```json
+{
+  "tasks": [
+    {
+      "_id": "674a1b2c3d4e5f6789012346",
+      "title": "Build a Website",
+      "status": "pending",
+      "createdAt": "2025-01-09T10:30:00Z"
+    }
+  ],
+  "pagination": {
+    "current": 1,
+    "total": 5,
+    "count": 42,
+    "limit": 10
+  }
+}
+```
+
+### PUT /api/tasks/[id]
+Update an existing task.
+
+**Request:**
+```json
+{
+  "title": "Build a Portfolio Website",
+  "description": "Updated description",
+  "status": "done"
+}
+```
+
+### GET /api/tasks/[id]/subtasks
+Get subtasks for a specific task.
+
+**Response:**
+```json
+{
+  "subtasks": [
+    {
+      "subtask_id": "674a1b2c3d4e5f6789012347",
+      "description": "Plan and outline the website structure",
+      "isCompleted": true
+    }
+  ]
+}
+```
+
+---
+
+## Development Choices
+
+### Why Next.js 14 with App Router?
+
+- Server-side rendering and static generation capabilities
+- Built-in API routes for full-stack development
+- Excellent TypeScript support and developer experience
+- Optimized performance with automatic code splitting
+
+### Why Google Gemini with Structured Output?
+
+- Latest AI technology with reliable structured responses
+- Built-in validation and type safety for subtask generation
+- Consistent JSON output format for seamless integration
+- Cost-effective compared to other AI services
+
+### Why MongoDB with Mongoose?
+
+- Flexible schema design for task and subtask management
+- Excellent Node.js ecosystem integration
+- Built-in validation and middleware support
+- Scalable for future feature additions
+
+
+---
+
+## Architecture
+
+### AI Integration
+
+The application uses Google Gemini 2.0 Flash with structured output to automatically generate actionable subtasks:
+
+1. **Subtask Generation**: When creating a task, AI analyzes the title and description
+2. **Structured Output**: Gemini returns formatted JSON array of subtask strings
+
+### Authentication Flow
+
+- JWT tokens stored in HTTP-only cookies for security
+- Password hashing using bcryptjs with salt rounds
+- Protected API routes with middleware validation
+- User isolation ensuring data privacy
+
+### Database Schema
+
+```typescript
+// Task Model
+{
+  title: String (max 100 chars),
+  description: String (max 500 chars),
+  status: 'pending' | 'done' (default: 'pending'),
+  userId: ObjectId (ref: User),
+  subtasks: [SubtaskSchema],
+  createdAt: Date,
+  updatedAt: Date
+}
+
+// Subtask Schema
+{
+  subtask_id: String (unique),
+  description: String (max 200 chars),
+  isCompleted: Boolean (default: false)
+}
+```
+
+### Project Structure
 
 ```
 src/
 ├── app/                    # Next.js 14 App Router
-│   ├── api/               # API routes
-│   │   ├── auth/          # Authentication endpoints
-│   │   └── tasks/         # Task management endpoints
-│   ├── dashboard/         # Dashboard page
-│   ├── login/            # Login page
-│   ├── register/         # Registration page
-│   ├── globals.css       # Global styles
-│   ├── layout.tsx        # Root layout
-│   └── page.tsx          # Home page
+│   ├── api/               # API routes (auth, tasks, subtasks)
+│   ├── dashboard/         # Protected dashboard page
+│   ├── login/            # Authentication pages
+│   └── register/         
 ├── components/            # Reusable React components
 │   ├── ui/               # shadcn/ui components
 │   ├── TaskCard.tsx      # Task display component
-│   └── TaskForm.tsx      # Task creation/editing form
-├── contexts/             # React Context providers
-│   └── AuthContext.tsx   # Authentication context
-├── hooks/                # Custom React hooks
-│   └── useTasks.ts       # Task-related API hooks
-├── lib/                  # Utility functions
-│   ├── auth.ts           # Authentication utilities
-│   ├── dbConnect.ts      # Database connection
-│   ├── middleware.ts     # API middleware
-│   └── utils.ts          # General utilities
-├── models/               # MongoDB/Mongoose models
-│   ├── Task.ts           # Task model
-│   └── User.ts           # User model
-└── providers/            # Application providers
-    └── QueryProvider.tsx # React Query provider
+│   ├── TaskForm.tsx      # Task CRUD operations
+│   └── SubtaskList.tsx   # Subtask management
+├── hooks/                # Custom React Query hooks
+│   ├── useTasks.ts       # Task-related operations
+│   └── useSubtasks.ts    # Subtask operations
+├── services/             # External service integrations
+│   └── geminiService.ts  # AI subtask generation
+├── models/               # MongoDB/Mongoose schemas
+│   ├── Task.ts           # Task and Subtask models
+│   └── User.ts           # User authentication model
+└── lib/                  # Utility functions and middleware
+    ├── auth.ts           # JWT utilities
+    ├── dbConnect.ts      # MongoDB connection
+    └── middleware.ts     # API middleware
 ```
-
-## 🔧 Available Scripts
-
-```bash
-# Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Start production server
-
-# Code Quality
-npm run lint         # Run ESLint
-npm run type-check   # Run TypeScript type checking
-```
-
-## 🌐 API Endpoints
-
-### Authentication
-
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-- `GET /api/auth/me` - Get current user
-
-### Tasks
-
-- `GET /api/tasks` - Get tasks with pagination and filtering
-- `POST /api/tasks` - Create a new task
-- `GET /api/tasks/[id]` - Get a specific task
-- `PUT /api/tasks/[id]` - Update a task
-- `DELETE /api/tasks/[id]` - Delete a task
-
-### Query Parameters for GET /api/tasks
-
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10)
-- `search` - Search in title and description
-- `status` - Filter by status (pending/done)
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Connect your repository to [Vercel](https://vercel.com)
-3. Add environment variables in Vercel dashboard
-4. Deploy automatically on every push
-
-### Environment Variables for Production
-
-```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/task-manager
-JWT_SECRET=your-production-jwt-secret
-NEXTAUTH_SECRET=your-production-nextauth-secret
-NEXTAUTH_URL=https://your-domain.vercel.app
-```
-
-### MongoDB Atlas Setup for Production
-
-1. Create a MongoDB Atlas account
-2. Set up a cluster
-3. Create a database user
-4. Configure network access (IP whitelist)
-5. Get the connection string and update `MONGODB_URI`
-
-## 🔐 Security Features
-
-- **Password Hashing**: All passwords are hashed using bcryptjs with salt rounds
-- **JWT Authentication**: Secure token-based authentication
-- **HTTP-Only Cookies**: Tokens stored in secure, HTTP-only cookies
-- **Input Validation**: Server-side validation for all inputs
-- **CORS Protection**: Proper CORS configuration
-- **User Isolation**: Users can only access their own data
-
-## 🎨 UI Components
-
-This project uses [shadcn/ui](https://ui.shadcn.com/) for consistent, accessible, and beautiful components:
-
-- **Form Components**: Input, Label, Button, Select
-- **Layout Components**: Card, Dialog, Badge
-- **Feedback Components**: Loading states, Error boundaries
-- **Icons**: Lucide React icon library
-
-## 🧪 Development Tips
-
-### Customizing the UI
-
-- Modify `src/app/globals.css` for global styles
-- Update `tailwind.config.ts` for custom theme configurations
-- Add new shadcn/ui components using their CLI
-
-### Adding New Features
-
-- Create new API routes in `src/app/api/`
-- Add React Query hooks in `src/hooks/`
-- Build reusable components in `src/components/`
-
-### Database Schema Changes
-
-- Update Mongoose models in `src/models/`
-- Ensure proper validation and indexing
-- Test with both local and Atlas databases
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Error**
-
-   - Check if MongoDB is running (local) or connection string is correct (Atlas)
-   - Verify environment variables are loaded correctly
-
-2. **Authentication Issues**
-
-   - Ensure JWT_SECRET is set and consistent
-   - Check cookie settings for your domain
-
-3. **Build Errors**
-
-   - Run `npm run type-check` to identify TypeScript issues
-   - Ensure all dependencies are installed
-
-4. **Performance Issues**
-   - Check React Query cache configuration
-   - Optimize database queries with proper indexing
-
-### Getting Help
-
-If you encounter issues:
-
-1. Check the browser console for client-side errors
-2. Check the server logs for API errors
-3. Verify environment variables are correctly set
-4. Ensure database connectivity
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📧 Contact
-
-For questions or support, please open an issue in the GitHub repository.
 
 ---
 
-**Happy Task Managing!** 🎉
+## Acknowledgements
+
+This project was completed with the assistance of various online resources and documentation:
+
+- Google Gemini API Documentation for structured output implementation
+- MongoDB and Mongoose Documentation
+- shadcn/ui Documentation
+
+### What was the challenging part of the assignment?
+
+- **AI Integration**: Implementing reliable AI subtask generation with structured output and fallback systems
