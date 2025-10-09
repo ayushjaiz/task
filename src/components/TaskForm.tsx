@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCreateTask, useUpdateTask, Task } from '@/hooks/useTasks';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,6 +32,20 @@ export default function TaskForm({ task, open, onOpenChange }: TaskFormProps) {
 
     const isEditing = !!task;
     const loading = createTask.isPending || updateTask.isPending;
+
+    // Update form state when task prop changes
+    useEffect(() => {
+        if (task) {
+            setTitle(task.title);
+            setDescription(task.description);
+            setStatus(task.status);
+        } else {
+            setTitle('');
+            setDescription('');
+            setStatus('pending');
+        }
+        setError('');
+    }, [task]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
