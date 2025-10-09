@@ -3,6 +3,7 @@ import dbConnect from '@/lib/dbConnect';
 import Task from '@/models/Task';
 import { requireAuth } from '@/lib/middleware';
 import { geminiService } from '@/services/geminiService';
+import { TaskCacheService } from '@/services/cacheUtils';
 
 export async function GET(request: NextRequest) {
     try {
@@ -16,6 +17,15 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '10');
         const search = searchParams.get('search') || '';
         const status = searchParams.get('status') || '';
+
+        // Try to get from cache first (only if no search/filter parameters)
+        if (!search && !status && page === 1) {
+            const cachedTasks = await TaskCacheService.getUserTasks(userId);
+            if (cachedTasks) {
+                console.log('Returning cached tasks for user:', userId);
+                return NextResponse.json(cachedTasks);
+            }
+        }
 
         // Build query
         interface TaskQuery {
@@ -50,7 +60,7 @@ export async function GET(request: NextRequest) {
             Task.countDocuments(query)
         ]);
 
-        return NextResponse.json({
+        const response = {
             tasks,
             pagination: {
                 current: page,
@@ -58,7 +68,14 @@ export async function GET(request: NextRequest) {
                 count: total,
                 limit
             }
-        });
+        };
+
+        // Cache the result if it's a simple query (no search/filter)
+        if (!search && !status && page === 1) {
+            await TaskCacheService.cacheUserTasks(userId, response);
+        }
+
+        return NextResponse.json(response);
     } catch (error) {
         console.error('Get tasks error:', error);
         if (error instanceof Error && error.message === 'Authentication required') {
@@ -114,6 +131,12 @@ export async function POST(request: NextRequest) {
             userId,
             subtasks
         });
+
+        // Invalidate user's task cache since we added a new task
+        await TaskCacheService.invalidateUserTasks(userId);
+
+        // Cache the new task
+        await TaskCacheService.cacheTask(task._id.toString(), task);
 
         return NextResponse.json(
             {

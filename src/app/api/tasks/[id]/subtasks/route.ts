@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Task from '@/models/Task';
 import { requireAuth } from '@/lib/middleware';
+import { TaskCacheService } from '@/services/cacheUtils';
 
 export async function PATCH(
     request: NextRequest,
@@ -43,6 +44,12 @@ export async function PATCH(
                 { status: 404 }
             );
         }
+
+        // Update cache with modified task (includes updated subtasks)
+        await TaskCacheService.cacheTask(id, task);
+        
+        // Invalidate user's tasks cache since subtask was updated
+        await TaskCacheService.invalidateUserTasks(userId);
 
         return NextResponse.json({
             message: 'Subtask updated successfully',

@@ -19,6 +19,7 @@
 ## Project Features
 
 - **Task Management**: Complete CRUD operations with title, description, status tracking, and timestamps
+- **Caching**: Fast retrievel from tasks
 - **AI-Powered Subtasks**: Automatically generate actionable subtasks using Google Gemini 2.0 Flash with structured output
 - **User Authentication**: Secure JWT-based authentication with HTTP-only cookies and password hashing
 - **Advanced Search & Filtering**: Real-time search by title/description with status filtering and pagination
@@ -29,7 +30,7 @@
 ## Tech Stack
 
 - **Frontend**: Next.js 14 (App Router), TypeScript, React Query (TanStack Query)
-- **Backend**: Next.js API Routes, MongoDB with Mongoose ODM
+- **Backend**: Next.js API Routes, Redis MongoDB with Mongoose ODM
 - **Authentication**: JWT with bcryptjs password hashing
 - **AI Integration**: Google Gemini 2.0 Flash with Structured Output
 - **UI Framework**: shadcn/ui, Tailwind CSS, Lucide React Icons
@@ -47,6 +48,7 @@
 - **shadcn/ui**: Beautiful, accessible React components
 - **tailwindcss**: Utility-first CSS framework
 - **lucide-react**: Beautiful & consistent icon toolkit
+- **redis**: Redis implementation
 
 ---
 
@@ -58,6 +60,7 @@
 - npm or yarn
 - MongoDB (local or Atlas)
 - Google Gemini API Key
+- Redis uri
 
 ### Environment Variables
 
@@ -65,8 +68,9 @@ Create a `.env.local` file in the root directory:
 
 ```env
 # Database Configuration
-MONGODB_URI=mongodb://localhost:27017/task-manager
-# For MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/task-manager
+MONGODB_URI=
+REDIS_URI=
+
 
 # Authentication
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
@@ -353,3 +357,4 @@ This project was completed with the assistance of various online resources and d
 ### What was the challenging part of the assignment?
 
 - **AI Integration**: Implementing reliable AI subtask generation with structured output and fallback systems
+- **Cachig Integration**:

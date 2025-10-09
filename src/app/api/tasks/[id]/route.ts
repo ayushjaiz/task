@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Task from '@/models/Task';
 import { requireAuth } from '@/lib/middleware';
+import { TaskCacheService } from '@/services/cacheUtils';
 
 export async function GET(
     request: NextRequest,
@@ -13,6 +14,14 @@ export async function GET(
         const userId = requireAuth(request);
         const { id: taskId } = await params;
 
+        // Try to get from cache first (includes subtasks)
+        const cachedTask = await TaskCacheService.getTask(taskId);
+        if (cachedTask && cachedTask.userId === userId) {
+            console.log('Returning cached task with subtasks:', taskId);
+            return NextResponse.json({ task: cachedTask });
+        }
+
+        // If not in cache, get from database
         const task = await Task.findOne({ _id: taskId, userId });
 
         if (!task) {
@@ -21,6 +30,9 @@ export async function GET(
                 { status: 404 }
             );
         }
+
+        // Cache the task for future requests (includes subtasks)
+        await TaskCacheService.cacheTask(taskId, task);
 
         return NextResponse.json({ task });
     } catch (error) {
@@ -122,6 +134,12 @@ export async function PUT(
             );
         }
 
+        // Update cache with new task data
+        await TaskCacheService.cacheTask(taskId, task);
+        
+        // Invalidate user's tasks cache since task was updated
+        await TaskCacheService.invalidateUserTasks(userId);
+
         return NextResponse.json({
             message: 'Task updated successfully',
             task
@@ -159,6 +177,12 @@ export async function DELETE(
                 { status: 404 }
             );
         }
+
+        // Remove task from cache
+        await TaskCacheService.invalidateTask(taskId);
+        
+        // Invalidate user's tasks cache since task was deleted
+        await TaskCacheService.invalidateUserTasks(userId);
 
         return NextResponse.json({
             message: 'Task deleted successfully'
