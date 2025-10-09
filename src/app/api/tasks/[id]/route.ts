@@ -78,10 +78,40 @@ export async function PUT(
             );
         }
 
+        // Get the current task to check if title or description changed
+        const currentTask = await Task.findOne({ _id: taskId, userId });
+        
+        if (!currentTask) {
+            return NextResponse.json(
+                { error: 'Task not found' },
+                { status: 404 }
+            );
+        }
+
+        // Check if title or description changed (which would require regenerating subtasks)
+        const titleChanged = currentTask.title !== title;
+        const descriptionChanged = currentTask.description !== description;
+        const shouldRegenerateSubtasks = titleChanged || descriptionChanged;
+
+        let updateData: any = { title, description, status, updatedAt: new Date() };
+
+        // If title or description changed, regenerate subtasks
+        if (shouldRegenerateSubtasks) {
+            try {
+                const { geminiService } = await import('@/services/geminiService');
+                const subtasks = await geminiService.generateSubtasks(title, description);
+                updateData.subtasks = subtasks;
+            } catch (subtaskError) {
+                console.error('Failed to regenerate subtasks:', subtaskError);
+                // Continue with the update even if subtask generation fails
+                // Keep the existing subtasks
+            }
+        }
+
         // Update task
         const task = await Task.findOneAndUpdate(
             { _id: taskId, userId },
-            { title, description, status, updatedAt: new Date() },
+            updateData,
             { new: true }
         );
 

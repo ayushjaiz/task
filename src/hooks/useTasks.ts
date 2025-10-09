@@ -97,8 +97,11 @@ export const useUpdateTask = () => {
 
             return response.json();
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            // Invalidate all task-related queries to ensure fresh data including subtasks
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
+            // Also remove any specific task queries that might be cached
+            queryClient.removeQueries({ queryKey: ['task'] });
         },
     });
 };

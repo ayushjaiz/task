@@ -64,7 +64,6 @@ export default function TaskForm({ task, open, onOpenChange }: TaskFormProps) {
                 await createTask.mutateAsync({
                     title: title.trim(),
                     description: description.trim(),
-                    status,
                 });
             }
 
@@ -128,18 +127,20 @@ export default function TaskForm({ task, open, onOpenChange }: TaskFormProps) {
                                 {description.length}/500
                             </div>
                         </div>
-                        <div className="grid gap-2">
-                            <Label htmlFor="status">Status</Label>
-                            <Select value={status} onValueChange={(value: "pending" | "done") => setStatus(value)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                    <SelectItem value="done">Done</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        {isEditing && (
+                            <div className="grid gap-2">
+                                <Label htmlFor="status">Status</Label>
+                                <Select value={status} onValueChange={(value: "pending" | "done") => setStatus(value)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="pending">Pending</SelectItem>
+                                        <SelectItem value="done">Done</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
                         {error && (
                             <div className="text-red-600 text-sm">{error}</div>
                         )}
