@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Task from '@/models/Task';
 import { requireAuth } from '@/lib/middleware';
+import { geminiService } from '@/services/geminiService';
 
 export async function GET(request: NextRequest) {
     try {
@@ -102,12 +103,16 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Create task
+        // Generate subtasks using Gemini AI
+        const subtasks = await geminiService.generateSubtasks(title, description);
+
+        // Create task with generated subtasks
         const task = await Task.create({
             title,
             description,
             status,
-            userId
+            userId,
+            subtasks
         });
 
         return NextResponse.json(

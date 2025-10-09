@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { SubtaskType } from '@/models/Task';
 
 export interface Task {
     _id: string;
@@ -6,6 +7,7 @@ export interface Task {
     description: string;
     status: 'pending' | 'done';
     userId: string;
+    subtasks: SubtaskType[];
     createdAt: string;
     updatedAt: string;
 }

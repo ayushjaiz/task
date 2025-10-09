@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Task, useDeleteTask } from '@/hooks/useTasks';
+import { useUpdateSubtask } from '@/hooks/useSubtasks';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +15,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import SubtaskList from './SubtaskList';
 
 interface TaskCardProps {
     task: Task;
@@ -23,6 +25,7 @@ interface TaskCardProps {
 export default function TaskCard({ task, onEdit }: TaskCardProps) {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const deleteTask = useDeleteTask();
+    const updateSubtask = useUpdateSubtask();
 
     const handleDelete = async () => {
         try {
@@ -30,6 +33,18 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
             setDeleteDialogOpen(false);
         } catch (error) {
             console.error('Failed to delete task:', error);
+        }
+    };
+
+    const handleSubtaskToggle = async (subtaskId: string, isCompleted: boolean) => {
+        try {
+            await updateSubtask.mutateAsync({
+                taskId: task._id,
+                subtaskId,
+                isCompleted
+            });
+        } catch (error) {
+            console.error('Failed to update subtask:', error);
         }
     };
 
@@ -87,6 +102,13 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
                             </Button>
                         </div>
                     </div>
+                    
+                    {/* Subtasks Section */}
+                    <SubtaskList
+                        taskId={task._id}
+                        subtasks={task.subtasks || []}
+                        onSubtaskToggle={handleSubtaskToggle}
+                    />
                 </CardContent>
             </Card>
 

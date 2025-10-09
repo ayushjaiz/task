@@ -1,13 +1,38 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface SubtaskType {
+    subtask_id: string;
+    description: string;
+    isCompleted: boolean;
+}
+
 export interface ITask extends Document {
     title: string;
     description: string;
     status: 'pending' | 'done';
     userId: mongoose.Types.ObjectId;
+    subtasks: SubtaskType[];
     createdAt: Date;
     updatedAt: Date;
 }
+
+const SubtaskSchema = new Schema({
+    subtask_id: {
+        type: String,
+        required: true,
+        default: () => new mongoose.Types.ObjectId().toString()
+    },
+    description: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: [200, 'Subtask description cannot be more than 200 characters']
+    },
+    isCompleted: {
+        type: Boolean,
+        default: false
+    }
+});
 
 const TaskSchema = new Schema<ITask>({
     title: {
@@ -32,6 +57,7 @@ const TaskSchema = new Schema<ITask>({
         ref: 'User',
         required: true,
     },
+    subtasks: [SubtaskSchema],
     createdAt: {
         type: Date,
         default: Date.now,
@@ -42,7 +68,7 @@ const TaskSchema = new Schema<ITask>({
     },
 });
 
-TaskSchema.pre('save', function (next) {
+TaskSchema.pre('save', function (this: ITask, next: () => void) {
     this.updatedAt = new Date();
     next();
 });
