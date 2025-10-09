@@ -33,7 +33,7 @@ export default function SubtaskList({ taskId, subtasks, onSubtaskToggle }: Subta
                         {isExpanded ? '▼' : '▶'}
                     </span>
                     <span className="text-sm font-medium text-gray-700">
-                        Subtasks ({completedCount}/{totalCount})
+                        Checklist ({completedCount}/{totalCount})
                     </span>
                 </div>
                 <div className="flex items-center space-x-2">
