@@ -57,11 +57,11 @@ export class GeminiService {
             console.error('Error generating subtasks with Gemini:', error);
             
             // Fallback: return empty array or basic subtasks
-            return this.getFallbackSubtasks(title, description);
+            return this.getFallbackSubtasks();
         }
     }
 
-    private getFallbackSubtasks(_title: string, _description: string): SubtaskType[] {
+    private getFallbackSubtasks(): SubtaskType[] {
         // Basic fallback subtasks when AI fails
         const fallbackDescriptions = [
             'Plan and outline the approach',

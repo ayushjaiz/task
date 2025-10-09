@@ -105,7 +105,6 @@ export default function TaskCard({ task, onEdit }: TaskCardProps) {
                     
                     {/* Subtasks Section */}
                     <SubtaskList
-                        taskId={task._id}
                         subtasks={task.subtasks || []}
                         onSubtaskToggle={handleSubtaskToggle}
                     />

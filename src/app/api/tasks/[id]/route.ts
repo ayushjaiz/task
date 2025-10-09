@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
-import Task from '@/models/Task';
+import Task, { SubtaskType } from '@/models/Task';
 import { requireAuth } from '@/lib/middleware';
 import { TaskCacheService } from '@/services/cacheUtils';
 
@@ -105,7 +105,7 @@ export async function PUT(
         const descriptionChanged = currentTask.description !== description;
         const shouldRegenerateSubtasks = titleChanged || descriptionChanged;
 
-        let updateData: any = { title, description, status, updatedAt: new Date() };
+        const updateData: { title: string; description: string; status: string; updatedAt: Date; subtasks?: SubtaskType[] } = { title, description, status, updatedAt: new Date() };
 
         // If title or description changed, regenerate subtasks
         if (shouldRegenerateSubtasks) {

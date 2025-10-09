@@ -107,7 +107,7 @@ export const CACHE_KEYS = {
 };
 
 // Export the functions so they can be used in other parts of the app
-export default { 
+const cacheServiceExport = { 
     get, 
     set, 
     setPersistent,
@@ -119,3 +119,5 @@ export default {
     flush, 
     generateKey 
 };
+
+export default cacheServiceExport;

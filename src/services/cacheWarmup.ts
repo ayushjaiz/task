@@ -18,7 +18,7 @@ export class CacheWarmupService {
             
             // Cache each task individually (includes subtasks as part of task object)
             for (const task of tasks) {
-                await TaskCacheService.cacheTask(task._id.toString(), task);
+                await TaskCacheService.cacheTask(task._id, task);
             }
             
             // Cache the task list

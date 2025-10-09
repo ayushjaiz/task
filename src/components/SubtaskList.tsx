@@ -6,12 +6,11 @@ import SubtaskItem from './SubtaskItem';
 import { SubtaskType } from '@/models/Task';
 
 interface SubtaskListProps {
-    taskId: string;
     subtasks: SubtaskType[];
     onSubtaskToggle: (subtaskId: string, isCompleted: boolean) => void;
 }
 
-export default function SubtaskList({ taskId, subtasks, onSubtaskToggle }: SubtaskListProps) {
+export default function SubtaskList({ subtasks, onSubtaskToggle }: SubtaskListProps) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     if (!subtasks || subtasks.length === 0) {
